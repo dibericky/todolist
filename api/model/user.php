@@ -50,5 +50,17 @@ class User{
         $stmt->execute();
         return $stmt;
     }
+
+    public function getTasks($id){
+        $query = "SELECT * FROM user RIGHT JOIN task on user.id = task.userId WHERE userId=:userId";
+        $id = htmlspecialchars(strip_tags($id));
+        $stmt = $this->conn->prepare($query);
+        if($stmt->execute(array("userId"=>$id))){
+            $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }else{
+            $arr = array();
+        }
+        return $arr;
+    }
 }
 ?>

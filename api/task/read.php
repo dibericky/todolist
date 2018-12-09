@@ -1,7 +1,11 @@
 <?php
     header("Access-Control-Allow-Origin: *");
     header("Content-Type: application/json; charset=UTF-8");
-    
+    header("Access-Control-Allow-Methods: GET");
+    header("Access-Control-Max-Age: 3600");
+    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+
     include_once '../config/database.php';
     include_once '../model/task.php';
     include_once '../model/response.php';
@@ -11,21 +15,26 @@
     $response = new Response();
     $task = new Task($db);
 
-    $id = $_GET['id'];
-    
-    if($id == null){
+    if(empty($_GET['id'])){
         http_response_code(400);
         $response->error = "set an id";
-        echo $reponse->getJson();
+        echo $response->getJson();
     }else{
+        $id = $_GET['id'];
         $taskFound = $task->getById($id);
         $num = $taskFound->rowCount();
         if($num == 1){
-            $task_row = $stmt->fetch(PDO::FETCH_ASSOC);
+            http_response_code(200);
+
+            $task_row = $taskFound->fetch(PDO::FETCH_ASSOC);
             $arr = extractData($task_row);
             $response->data = $arr;
+        }else{
+            http_response_code(404);
+            $response->data = array();
+            $response->error = "Task not found";
         }
-        http_response_code(200);
+        
         echo json_encode($response);
     }
 
@@ -37,6 +46,6 @@
             "title"=>$row['title'],
             "description"=>$row['description'],
             "userId"=>$row['userId']
-        )
+        );
     }
 ?>
