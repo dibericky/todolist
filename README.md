@@ -10,7 +10,7 @@
 ### Task  
     CREATE TABLE `my_db`.`Task` (
         `id` INT(10) NOT NULL AUTO_INCREMENT , 
-        `state` INT(1) NOT NULL DEFAULT '0' COMMENT 'todo 0, running 1, done 2' ,
+        `state` INT(1) NOT NULL DEFAULT '1' COMMENT 'todo 1, running 2, done 3' ,
         `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , 
         `title` VARCHAR(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL , 
         `description` TEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL , 
