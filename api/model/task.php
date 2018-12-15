@@ -52,6 +52,18 @@
             $obj = htmlspecialchars(strip_tags($obj));
             $stmt->bindParam($string, $obj);
         }
+        public function deleteById($id){
+            $taskToDel = $this->getById($id);
+            if($taskToDel->rowCount() == 0){
+                return array("status"=>false, "data"=>array());
+            }
+            $query = "DELETE FROM ".$this->tb_name."
+                    WHERE id = ".$id;
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return array("status"=>true, "data"=>$taskToDel);
+        }
         
     }
 ?>
