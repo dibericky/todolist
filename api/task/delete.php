@@ -22,6 +22,7 @@
     }else{
         $id = $_GET['id'];
         $taskFound = $task->deleteById($id);
+        $num = $taskFound->rowCount();
         if($taskFound["status"] == true){
             http_response_code(200);
             $task_row = $taskFound["data"]->fetch(PDO::FETCH_ASSOC);

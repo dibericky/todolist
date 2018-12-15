@@ -33,7 +33,7 @@ if(!empty($_POST['state']) &&
         $task->description = $_POST['description'];
 
         if($task->create()){
-            http_response_code(200);
+            http_response_code(201);
             $arr = array(
                 "id"=> $task->id,
                 "state"=> $task->state,
