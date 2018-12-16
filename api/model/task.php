@@ -28,7 +28,7 @@
             $this->date = $row["date"];
             $this->title = $row["title"];
             $this->description = $row["description"];
-            $this->userId = $row["description"];
+            $this->userId = $row["userId"];
 
             return true;
         }

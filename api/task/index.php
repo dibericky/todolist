@@ -1,7 +1,7 @@
 <?php
     header("Access-Control-Allow-Origin: *");
     header("Content-Type: application/json; charset=UTF-8");
-    header("Access-Control-Allow-Methods: PUT");
+    header("Access-Control-Allow-Methods: *");
     header("Access-Control-Max-Age: 3600");
     header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
@@ -10,87 +10,91 @@
     include_once '../model/task.php';
     include_once '../model/user.php';
     include_once '../model/response.php';
+    include_once '../auth/support.php';
 
     $database = new Database();
     $db = $database->getConnection();
     $response = new Response();
     $task = new Task($db);
+    $user = new User($db);
+    $auth = new AuthManager($user);
 
-    $method = $_SERVER['REQUEST_METHOD'];
-
-    if($method == "POST"){
-        if(isParamsSet()){
-            $user = new User($db);
-            createTask($task, $response, $user);
-        }else{
-            http_response_code(400);
-            $response->error = "Data missed. Insert valid params.";
-        }
+    if(!$auth->checkToken()){
+        http_response_code(401);
+        $response->error = "Invalid Token";
     }else{
-        if(!isset($_GET['id']) || empty($_GET['id'])){
-            http_response_code(400);
-            $response->error = "set an id";
+        $method = $_SERVER['REQUEST_METHOD'];
+
+        if($method == "POST"){
+            if(isParamsSet()){
+                $userId = $auth->getUserConnectedId();
+                $user->getById($userId);
+                createTask($task, $response, $user);
+            }else{
+                http_response_code(400);
+                $response->error = "Data missed. Insert valid params.";
+            }
         }else{
-            $id = $_GET['id'];
-            if($method == "PUT"){
-                updateTask($id, $task, $response);
-            }else if($method == "GET"){
-                getTask($id, $task, $response);
-            }else if($method == "DELETE"){
-                deleteTask($id, $task, $response);
+            if(!isset($_GET['id']) || empty($_GET['id'])){
+                http_response_code(400);
+                $response->error = "set an id";
+            }else{
+                $id = $_GET['id'];
+                if($task->getById($id)){
+                    if($auth->isUserConnectedById($task->userId)){
+                        if($method == "PUT"){
+                            updateTask($id, $task, $response);
+                        }else if($method == "GET"){
+                            getTask($id, $task, $response);
+                        }else if($method == "DELETE"){
+                            deleteTask($id, $task, $response);
+                        }
+                    }else{
+                        http_response_code(401);
+                        $response->error = "Permission denied.";
+                    }
+                }else{
+                    http_response_code(404);
+                    $response->data = array();
+                    $response->error = "Task not found";
+                }
             }
         }
     }
     echo $response->getJson();
 
     function getTask($id, $task, $response){
-        $taskFound = $task->getById($id);
-        if($taskFound){
-            http_response_code(200);
-            $response->data = $task->getRepresentation();
-        }else{
-            http_response_code(404);
-            $response->data = array();
-            $response->error = "Task not found";
-        }
-    }
-
-    function deleteTask($id, $task, $response){
-        $taskFound = $task->deleteById($id);
-        if(!$taskFound){
-            http_response_code(404);
-            $response->data = array();
-            $response->error = "Task not found";
-            return;
-        }
         http_response_code(200);
         $response->data = $task->getRepresentation();
     }
 
-    function updateTask($id, $task, $response){
-        $taskFound = $task->getById($id);
-        if($taskFound){
-            $arrToUpdate = array("state"=>$task->state, "title"=>$task->title, "description"=>$task->description);
-            parse_str(file_get_contents("php://input"),$_PUT);
-            //first array passed by reference, it's gonna be modified
-            addIfPresent($arrToUpdate, "state", $_PUT);
-            addIfPresent($arrToUpdate, "title", $_PUT);
-            addIfPresent($arrToUpdate, "description", $_PUT);
-
-            $response->data = array("up"=>$arrToUpdate, "put"=>$_PUT);
-            if($task->updateById($id, $arrToUpdate)){
-                http_response_code(200);
-                $response->data = $arrToUpdate;
-            }else{
-                http_response_code(500);
-                $response->data = array();
-                $response->error = "Update failed.";
-            }
+    function deleteTask($id, $task, $response){
+        if($task->deleteById($id)){
+            http_response_code(200);
+            $response->data = $task->getRepresentation();
         }else{
-            http_response_code(404);
-            $response->data = array();
-            $response->error = "Task not found";
+            http_response_code(500);
+            $response->error = "Server error...";
         }
+    }
+
+    function updateTask($id, $task, $response){
+        $arrToUpdate = array("state"=>$task->state, "title"=>$task->title, "description"=>$task->description);
+        parse_str(file_get_contents("php://input"),$_PUT);
+        //first array passed by reference, it's gonna be modified
+        addIfPresent($arrToUpdate, "state", $_PUT);
+        addIfPresent($arrToUpdate, "title", $_PUT);
+        addIfPresent($arrToUpdate, "description", $_PUT);
+        //$response->data = array("up"=>$arrToUpdate, "put"=>$_PUT);
+        if($task->updateById($id, $arrToUpdate)){
+            http_response_code(200);
+            $response->data = $arrToUpdate;
+        }else{
+            http_response_code(500);
+            $response->data = array();
+            $response->error = "Update failed.";
+        }
+        
     }
 
     function extractData($row){
@@ -126,30 +130,22 @@
         return (
             !empty($_POST['state']) && 
             !empty($_POST['title']) &&
-            !empty($_POST['description']) &&
-            !empty($_POST['userId'])
+            !empty($_POST['description'])
         );
     }
 
     function createTask($task, $response, $user){
-        $userId = $_POST['userId'];
-        $getU = $user->getById($userId);
-        if(empty($getU)){
-            http_response_code(400);
-            $response->error = "User does not exist";
-        }else{
-            $task->userId = $userId;
-            $task->state = $_POST['state'];
-            $task->title = $_POST['title'];
-            $task->description = $_POST['description'];
+        $task->userId = $user->id;
+        $task->state = $_POST['state'];
+        $task->title = $_POST['title'];
+        $task->description = $_POST['description'];
 
-            if($task->create()){
-                http_response_code(201);
-                $response->data = $task->getRepresentation();
-            }else{
-                http_response_code(503);
-                $response->error = "Unable to create task";
-            }
+        if($task->create()){
+            http_response_code(201);
+            $response->data = $task->getRepresentation();
+        }else{
+            http_response_code(503);
+            $response->error = "Unable to create task";
         }
     }
 ?>
