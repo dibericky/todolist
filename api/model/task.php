@@ -34,6 +34,9 @@
         }
 
         function create(){
+            if(!$this->isValidData()){
+                return false;
+            }
             $this->date = date_create('now')->format('Y-m-d H:i:s');
 
             $query = "INSERT INTO ".$this->tb_name." SET 
@@ -91,6 +94,12 @@
             return false;
         }
 
+        public function isValidData(){
+            if($this->state < 1 || $this->state > 3){
+                return false;
+            }
+            return true;
+        }
         public function getRepresentation(){
             return array(
                 "id"=>$this->id,

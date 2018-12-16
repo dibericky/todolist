@@ -60,12 +60,20 @@ class User{
         return $stmt;
     }
 
-    public function getTasks($id){
+    public function getTasks($id, $state){
+        $state_str = "";
+        if($state > 0){
+            $state_str = " AND state=:state";
+            $arr_query = array("userId"=> "", "state"=>$state);
+        }else{
+            $arr_query = array("userId"=> "");
+        }
         $selQ = "task.id, title, state, date, description, userId";
-        $query = "SELECT ".$selQ." FROM user RIGHT JOIN task on user.id = task.userId WHERE userId=:userId";
+        $query = "SELECT ".$selQ." FROM user RIGHT JOIN task on user.id = task.userId WHERE userId=:userId".$state_str;
         $id = htmlspecialchars(strip_tags($id));
+        $arr_query["userId"] = $id;
         $stmt = $this->conn->prepare($query);
-        if($stmt->execute(array("userId"=>$id))){
+        if($stmt->execute($arr_query)){
             $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }else{
             $arr = array();

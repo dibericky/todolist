@@ -28,14 +28,19 @@
         }else{
             $userId = $auth->getUserConnectedId();
             if($method == "GET"){
-                getUserTasks($userId, $user, $response); //get tasks of user connected (id got from token)       
+                if(isset($_GET['state']) && !empty($_GET['state'])){
+                    getUserTasks($userId, $user, $response, $_GET['state']); //get tasks of user connected (id got from token) with state = param
+                }else{
+                    getUserTasks($userId, $user, $response, 0); //get tasks of user connected (id got from token)       
+                }
             }
         }
     }
     echo $response->getJson();
 
-    function getUserTasks($userId, $user, $response){
+    function getUserTasks($userId, $user, $response, $state){
         http_response_code(200);
-        $response->data = $user->getTasks($userId);;
+        $response->data = $user->getTasks($userId, $state);
     }
+    
 ?>

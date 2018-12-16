@@ -10,23 +10,23 @@
     include_once '../model/task.php';
     include_once '../model/user.php';
     include_once '../model/response.php';
+    include_once 'support.php';
 
     $database = new Database();
     $db = $database->getConnection();
     $response = new Response();
     $user = new User($db);
-
-    include_once 'support.php';
+    $auth = new AuthManager($user);
 
     $method = $_SERVER['REQUEST_METHOD'];
 
     if($method == "POST"){ //login
         if(isParamSet()){
-            if(isValidData($_POST['nickname'], $_POST['password'], $user)){
+            if(isValidData($_POST['nickname'], $_POST['password'], $user, $auth)){
                 http_response_code(200);
                 $data = array(
                     "id"=> $user->id, 
-                    "token"=> getToken($user->id, $user->nickname));
+                    "token"=> $auth->getToken($user->id, $user->nickname));
                 $response->data = $data;
             }else{
                 http_response_code(401);
@@ -46,8 +46,8 @@
         );
     }
 
-    function isValidData($nick, $pwd, $user){
-        $hashPwd = hashPwd($pwd);
+    function isValidData($nick, $pwd, $user, $auth){
+        $hashPwd = $auth->hashPwd($pwd);
         if($user->getByNickname($nick)){
             if($user->password == $hashPwd){
                 return true;
