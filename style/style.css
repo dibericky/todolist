@@ -1,0 +1,30 @@
+.content-space-medium{
+    margin: 2em;
+}
+.content-space-large{
+    margin: 3em;
+}
+.width-100{
+    width: 100%;
+}
+.space-vertical-large{
+    margin-top: 3em;
+    margin-bottom: 3em;
+}
+#title-app{
+    font-family: 'Indie Flower', cursive;
+}
+.text-font-bello{
+    font-family: 'Shadows Into Light', cursive;
+}
+.nice-blue{
+    color: #1a6fb0;
+}
+header{
+    background: #1a6fb0;
+    color: #fff;
+    margin-bottom: 1em;
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 100%;
+}
