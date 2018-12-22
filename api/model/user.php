@@ -41,7 +41,6 @@ class User{
         $stmt = $this->conn->prepare($query);
 
         $this->nickname = htmlspecialchars(strip_tags($this->nickname));
-        $this->password = hashPwd($this->password);
         
         //bind values
         $stmt->bindParam(":nickname", $this->nickname);

@@ -88,7 +88,7 @@
         //$response->data = array("up"=>$arrToUpdate, "put"=>$_PUT);
         if($task->updateById($id, $arrToUpdate)){
             http_response_code(200);
-            $response->data = $arrToUpdate;
+            $response->data = $task->getRepresentation();
         }else{
             http_response_code(500);
             $response->data = array();

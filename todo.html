@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>ToDo List</title>
+
+    <link rel="stylesheet" href="style/animate.min.css" />
+    <link rel="stylesheet" href="style/bootstrap.min.css" />
+    <link rel="stylesheet" href="style/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Indie+Flower|Shadows+Into+Light" rel="stylesheet">
+
+    <script src="script/jquery.min.js"></script>
+    <script src="script/js.cookie.js"></script>
+    <script src="script/todo.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center block-center space-vertical-large" style='position: relative'>
+                    <h1 class="animated" id="title-app">Ciao, nome</h1>
+                    <button id='logout' onclick='logout()'>Logout</button>
+                </div>
+            </div>
+            
+        </div>
+    </header>
+    <div id='mainTaskContainer' class="animated container">
+        <div class="row center-block">
+           <div class="btn-group" role="group" aria-label="Basic example">
+                <button data-state=0 onClick='getUserTasks()' type="button" class="showBtt btn btn-outline-primary">All</button>
+                <button data-state=1 onClick='getUserTasks(1)' type="button" class="showBtt btn btn-outline-primary">Todo</button>
+                <button data-state=2 onClick='getUserTasks(2)' type="button" class="showBtt btn btn-outline-primary">Running</button>
+                <button data-state=3 onClick='getUserTasks(3)' type="button" class="showBtt btn btn-outline-primary">Done</button>
+            </div>
+        </div>
+        <div id="task-container"class="row center-block">
+           
+        </div>
+    </div>
+
+    <div id='newTaskContainer' class="animated container">
+           <div class="form-group row">
+                <label for="titleNewTask" class="col-sm-2 col-form-label">Title</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control-plaintext" id="titleNewTask" placeholder="Title">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="descriptionNewTask" class="col-sm-2 col-form-label">Description</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" id="descriptionNewTask" placeholder="Description"></textarea>
+                </div>
+            </div>
+            <div class="btn-group" role="group">
+                <button onclick='submitTask()' type="button" class="btn btn-outline-primary">Create</button>
+                <button onclick='closeNewTask()' type="button" class="btn btn-outline-primary">Close</button>
+            </div>
+            <span id='logNewTask'></span>
+    </div>
+    
+    <button id='addTask' class="btn btn-primary animated" onclick='addTask()'><span>+</span></button>
+
+</body>
+</html>

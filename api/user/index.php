@@ -22,7 +22,7 @@
 
     if($method == "POST"){
         if(isParamsSet()){
-            createUser($user, $response);
+            createUser($user, $response, $auth);
         }else{
             http_response_code(400);
             $response->error = "Data missed. Insert valid params.";
@@ -72,18 +72,19 @@
         );
     }
 
-    function createUser($user, $response){
+    function createUser($user, $response, $auth){
             if($user->getByNickname($_POST['nickname'])){
                 http_response_code(503);
                 $response->error = "User already exists";
             }else{
                 $user->nickname = $_POST['nickname'];
-                $user->password = $_POST['password'];
+                $user->password = $auth->hashPwd($_POST['password']);
                 if($user->create()){
                         http_response_code(200);
                         $arr = array(
                             "id"=> $user->id,
-                            "nickname"=> $user->nickname
+                            "nickname"=> $user->nickname,
+                            "token"=> $auth->getToken($user->id, $user->nickname)
                         );
                         $response->data = $arr;
                 }else{

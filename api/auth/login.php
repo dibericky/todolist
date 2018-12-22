@@ -26,6 +26,7 @@
                 http_response_code(200);
                 $data = array(
                     "id"=> $user->id, 
+                    "username"=>$user->nickname,
                     "token"=> $auth->getToken($user->id, $user->nickname));
                 $response->data = $data;
             }else{

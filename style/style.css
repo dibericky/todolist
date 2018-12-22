@@ -14,6 +14,11 @@
 #title-app{
     font-family: 'Indie Flower', cursive;
 }
+#title-welcome{
+    opacity: 0;
+    display: none;
+    font-family: 'Indie Flower', cursive;
+}
 .text-font-bello{
     font-family: 'Shadows Into Light', cursive;
 }
@@ -27,4 +32,89 @@ header{
     margin-left: 0px;
     margin-right: 0px;
     width: 100%;
+}
+.taskCard{
+    opacity: 0;
+}
+.taskCard .card{
+    margin: 0.5em;
+}
+.taskCard.state-1 {
+    color: #1263a2;
+}
+.taskCard.state-2 {
+    color: #248b3f;
+}
+.taskCard.state-3 {
+    color: #1263a2;
+}
+button.card-link.delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
+    border: 1px solid #f00;
+    background: #ffe4e4;
+    height: 1.5em;
+    width: 1.5em;
+    line-height: 0.75em;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 100%;
+    color: #f00;
+}
+button.card-link.delete:hover{
+    cursor: pointer;
+    background: #ffe4f4;
+}
+.btn-group{
+    margin: 0 auto; 
+}
+#addTask{
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    border-radius: 100%;
+    height: 1.5em;
+    width: 1.5em;
+    font-size: 2em;
+    line-height: 0em;
+    border: 0;
+    background: #db4437;
+    cursor: pointer;
+    box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.2);
+}
+#addTask span {
+    position: relative;
+    bottom: 0.1em;
+    color: #fff;
+}
+#newTaskContainer{
+    display: none;
+    opacity: 0;
+}
+#noTask{
+    margin: 2em;
+    font-family: 'Indie Flower', cursive;
+    opacity: 0;
+}
+button#logout {
+    background: none;
+    color: #fff;
+    border: none;
+    font-family: 'Indie Flower', cursive;
+    position: absolute;
+    left: 0;
+    border-left: 1px solid;
+    bottom: -1.5em;
+    cursor: pointer;
+    font-size: 1.2em;
+    border-radius: 5px;
+    transition: all 0.5s;
+    margin-left: 1em;
+}
+button#logout:hover{
+    border: 1px solid;
+    background: #ffffffdd;
+    color: #1a6fb0;
 }

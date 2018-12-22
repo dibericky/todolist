@@ -1,8 +1,17 @@
+const token = Cookies.get('token');
+if(token !== undefined && token !== null){
+    location.href = 'todo.html'
+}
 $(document).ready(function () {
     $("#btt_login").on("click", function(){
         var username = $("#username").val();
+        if(username == ''){
+            return cannotBeEmpty("username")
+        }
         var password = $("#password").val();
-    
+        if(password == ''){
+            return cannotBeEmpty("password")
+        }
         $.ajax({
             url: 'http://localhost/myproject/todolist/api/auth/login.php',
             data: {
@@ -10,25 +19,65 @@ $(document).ready(function () {
                 password: password
             },
             type: 'POST',
-            success: function (response) {  
-                let {token, id} = response.data;
-                console.log(token);
-                console.log(id);
-                Cookies.set('token', token, { expires: 7 });
-                Cookies.set('id', id, { expires: 7 });
-                console.log(Cookies.get());
-                
-            },
+            success: successfulHandler,
             statusCode: {
                 401: function(res){
-                    alert(res.responseJSON.error);
+                    log(res.responseJSON.error);
                 }
             }
             
         });
     });
     $("#btt_register").on("click", function(){
-
+        var username = $("#username").val();
+        if(username == ''){
+            return cannotBeEmpty("username")
+        }
+        var password = $("#password").val();
+        if(password == ''){
+            return cannotBeEmpty("password")
+        }
+        $.ajax({
+            url: 'http://localhost/myproject/todolist/api/user/',
+            data: {
+                nickname: username,
+                password: password
+            },
+            type: 'POST',
+            success: successfulHandler,
+            statusCode: {
+                401: function(res){
+                    log(res.responseJSON.error);
+                },
+                503: function(res){
+                    log(res.responseJSON.error);
+                },
+                400: function(res){
+                    log("invalid input data");
+                }
+            }
+            
+        });
     });
     
 });
+function log(msg){
+    $("#log").text(msg)
+}
+function cannotBeEmpty(field){
+    $("#log").text("Field "+field+" cannot be empty");
+    return $("#"+field).focus()
+}
+function successfulHandler(response) { 
+    console.log(response) 
+    $("#log").val('')
+    let {token, id, nickname} = response.data;
+    Cookies.set('token', token, { expires: 7 });
+    Cookies.set('id', id, { expires: 7 });
+    Cookies.set('username', nickname, { expires: 7 });
+    $("#title-welcome").show();
+    $("#title-app").addClass("fadeOutRight");
+    $("#title-app").hide();
+    $("#title-welcome").addClass("fadeInLeft");
+    location.href = "todo.html";
+}
