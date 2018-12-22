@@ -4,8 +4,6 @@
 
 ### User 
     CREATE TABLE `my_db`.`User` ( `id` INT NOT NULL AUTO_INCREMENT , `nickname` VARCHAR(255) NOT NULL , `password` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
-### Tag  
-    CREATE TABLE `my_db`.`Tag` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(25) NOT NULL DEFAULT 'Today' , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 ### Task  
     CREATE TABLE `my_db`.`Task` (
@@ -19,9 +17,4 @@
         FOREIGN KEY (`userId`) REFERENCES user(`id`)
     ) ENGINE = InnoDB;
 
-### TaskTag     
-    CREATE TABLE `my_db`.`TaskTag` ( `idTask` INT NOT NULL , `idTag` INT NOT NULL, 
-                                FOREIGN KEY(`idTask`) REFERENCES task(`id`),
-                                 FOREIGN KEY(`idTag`) REFERENCES tag(`id`)
-                               ) ENGINE = InnoDB;
    
