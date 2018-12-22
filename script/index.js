@@ -71,10 +71,10 @@ function cannotBeEmpty(field){
 function successfulHandler(response) { 
     console.log(response) 
     $("#log").val('')
-    let {token, id, nickname} = response.data;
+    let {token, id, username} = response.data;
     Cookies.set('token', token, { expires: 7 });
     Cookies.set('id', id, { expires: 7 });
-    Cookies.set('username', nickname, { expires: 7 });
+    Cookies.set('username', username, { expires: 7 });
     $("#title-welcome").show();
     $("#title-app").addClass("fadeOutRight");
     $("#title-app").hide();

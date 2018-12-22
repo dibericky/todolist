@@ -83,7 +83,7 @@
                         http_response_code(200);
                         $arr = array(
                             "id"=> $user->id,
-                            "nickname"=> $user->nickname,
+                            "username"=> $user->nickname,
                             "token"=> $auth->getToken($user->id, $user->nickname)
                         );
                         $response->data = $arr;
