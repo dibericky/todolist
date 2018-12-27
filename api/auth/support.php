@@ -1,7 +1,17 @@
 <?php
+// generate json web token
+include_once $lib.'firebase/php-jwt/src/BeforeValidException.php';
+include_once $lib.'firebase/php-jwt/src/ExpiredException.php';
+include_once $lib.'firebase/php-jwt/src/SignatureInvalidException.php';
+include_once $lib.'firebase/php-jwt/src/JWT.php';
+
+use \Firebase\JWT\JWT;
 
 
     class AuthManager{
+        
+        private $key = "example_key";
+
         private $connectedUser = array(
             "id"=>0,
             "nickname"=> "");
@@ -16,9 +26,20 @@
             return md5($password);
         }
         public function getToken($id, $nickname){
-            return $id."_".md5($id."stringa".$nickname);
+            $token = $this->getArrayJwt($id, $nickname);
+            return JWT::encode($token, $this->key);
         }
         private function isTokenValid($token){
+            try{
+                $decoded = JWT::decode($token, $this->key, array('HS256'));
+                $this->connectedUser["id"] = $decoded->data->id;
+                $this->connectedUser["nickname"] = $decoded->data->username;
+                return true;
+            }catch(Exception $e){
+                return false;
+            }
+        }
+        private function _isTokenValid($token){
             $arr = explode("_", $token);
             if(count($arr) != 2){
                 return false;
@@ -54,5 +75,13 @@
             return $this->connectedUser["id"];
         }
         
+        private function getArrayJwt($id, $nickname){
+            return array(
+                "data" => array(
+                    "id" => $id,
+                    "username" => $nickname
+                )
+             );
+        }
     }
 ?>

@@ -1,4 +1,5 @@
 const token = Cookies.get('token');
+
 if(token !== undefined && token !== null){
     location.href = 'todo.html'
 }
@@ -13,7 +14,7 @@ $(document).ready(function () {
             return cannotBeEmpty("password")
         }
         $.ajax({
-            url: 'http://localhost/myproject/todolist/api/auth/login.php',
+            url: '/api/auth/login.php',
             data: {
                 nickname: username,
                 password: password
@@ -38,7 +39,7 @@ $(document).ready(function () {
             return cannotBeEmpty("password")
         }
         $.ajax({
-            url: 'http://localhost/myproject/todolist/api/user/',
+            url: '/api/user/',
             data: {
                 nickname: username,
                 password: password

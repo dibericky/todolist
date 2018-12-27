@@ -10,6 +10,7 @@
     include_once '../../model/task.php';
     include_once '../../model/user.php';
     include_once '../../model/response.php';
+    include_once '../../config/core.php';
     include_once '../../auth/support.php';
 
     $database = new Database();

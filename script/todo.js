@@ -8,7 +8,7 @@ function deletehandler(e){
     const target = $(e.target)[0]
     const id = target.dataset.id
     const token = Cookies.get('token');
-    const url = `http://localhost/myproject/todolist/api/task/?id=${id}&token=${token}`
+    const url = `/api/task/?id=${id}&token=${token}`
     const success = function(res){
         console.log(res)
         $("#taskId"+id).hide();
@@ -42,7 +42,7 @@ function getUserTasks(state){
         stateNum = 0
     }
     const token = Cookies.get('token');
-    const url = 'http://localhost/myproject/todolist/api/user/tasks/?token='+token+state
+    const url = '/api/user/tasks/?token='+token+state
     const type = 'GET'
     const statusCode = {
         401: invalidToken,
@@ -105,7 +105,7 @@ function stateButtonHandler(event){
     const target = $(event.target)[0]
     const state = target.dataset.state
     const id = target.parentElement.dataset.id
-    const url = `http://localhost/myproject/todolist/api/task/?id=${id}&token=${getToken()}`
+    const url = `/api/task/?id=${id}&token=${getToken()}`
     const body = {
         state: state
     }
@@ -202,7 +202,7 @@ function submitTask(){
     const description = $("#descriptionNewTask").val()
     if(description == '')return noDescriptionSet()
     
-    const url = 'http://localhost/myproject/todolist/api/task/?token='+getToken()
+    const url = '/api/task/?token='+getToken()
     const success = function(res){
         $("#logNewTask").text('Task created!')
         setTimeout(function(){
