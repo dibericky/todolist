@@ -68,7 +68,7 @@ class User{
             $arr_query = array("userId"=> "");
         }
         $selQ = "task.id, title, state, date, description, userId";
-        $query = "SELECT ".$selQ." FROM user RIGHT JOIN task on user.id = task.userId WHERE userId=:userId".$state_str;
+        $query = "SELECT ".$selQ." FROM user JOIN task on user.id = task.userId WHERE userId=:userId".$state_str;
         $id = htmlspecialchars(strip_tags($id));
         $arr_query["userId"] = $id;
         $stmt = $this->conn->prepare($query);
