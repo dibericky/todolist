@@ -23,7 +23,7 @@ use \Firebase\JWT\JWT;
         }
 
         public function hashPwd($password){
-            return md5($password);
+            return crypt($password, "ottedeneb_di_odraccir");
         }
         public function getToken($id, $nickname){
             $token = $this->getArrayJwt($id, $nickname);
@@ -39,25 +39,7 @@ use \Firebase\JWT\JWT;
                 return false;
             }
         }
-        private function _isTokenValid($token){
-            $arr = explode("_", $token);
-            if(count($arr) != 2){
-                return false;
-            }
-            $id = $arr[0];
-            if($this->user->getById($id)){
-                $nickname = $this->user->nickname;
-                if($this->getToken($id, $nickname) == $token){
-                        $this->connectedUser["id"] = $id;
-                        $this->connectedUser["nickname"] = $nickname;
-
-                        //echo $connectedUser["id"]." ".$connectedUser["nickname"];
-                        return true;
-                }
-            }
-            return false;
-        }
-
+       
         public function checkToken(){
             if(!isset($_GET['token']) || empty($_GET['token'])){
                 return false;
