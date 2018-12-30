@@ -49,12 +49,6 @@
     }
 
     function isValidData($nick, $pwd, $user, $auth){
-        $hashPwd = $auth->hashPwd($pwd);
-        if($user->getByNickname($nick)){
-            if($user->password == $hashPwd){
-                return true;
-            }
-        }
-        return false;
+        return ($user->getByNickname($nick) && password_verify($pwd, $user->password));
     }
 ?>

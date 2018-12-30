@@ -23,7 +23,7 @@ use \Firebase\JWT\JWT;
         }
 
         public function hashPwd($password){
-            return crypt($password, "ottedeneb_di_odraccir");
+            return password_hash($password, PASSWORD_DEFAULT);
         }
         public function getToken($id, $nickname){
             $token = $this->getArrayJwt($id, $nickname);
