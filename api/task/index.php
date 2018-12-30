@@ -43,12 +43,18 @@
                 $id = $_GET['id'];
                 if($task->getById($id)){
                     if($auth->isUserConnectedById($task->userId)){
-                        if($method == "PUT"){
-                            updateTask($id, $task, $response);
-                        }else if($method == "GET"){
-                            getTask($id, $task, $response);
-                        }else if($method == "DELETE"){
-                            deleteTask($id, $task, $response);
+                        switch($method){
+                            case "PUT":
+                                updateTask($id, $task, $response);
+                                break;
+                            case "GET":
+                                getTask($id, $task, $response);
+                                break;
+                            case "DELETE":
+                                deleteTask($id, $task, $response);
+                                break;
+                            default:
+                                break;
                         }
                     }else{
                         http_response_code(401);
